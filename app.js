@@ -11,6 +11,7 @@ const cors = require('cors')
 // const hpp = require('hpp');
 
 const docRouter = require('./routes/docRoutes')
+const userRouter = require('./routes/userRouter')
 
 const app = express();
 
@@ -62,6 +63,8 @@ app.use(express.static(`${__dirname}/public`));
 // Routes
 app.use(cors())
 app.use('/api/v1/document', docRouter);
+app.use('/api/v1/user', userRouter);
+
 // app.use('/api/v1/users', userRouter);
 
 
