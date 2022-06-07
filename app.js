@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 // const { default: rateLimit } = require('express-rate-limit');
 // const { default: helmet } = require('helmet');
 // const ExpressMongoSanitize = require('express-mongo-sanitize');
@@ -61,7 +62,21 @@ app.use(express.static(`${__dirname}/public`));
 // })
 
 // Routes
-app.use(cors())
+const corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: 'true',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type,Authorization, Accept');
+    next();
+});
+
+app.use(cors(corsOptions))
+app.use(cookieParser())
+
 app.use('/api/v1/document', docRouter);
 app.use('/api/v1/user', userRouter);
 
