@@ -181,3 +181,14 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
         token: token,
     })
 })
+
+exports.me = catchAsync(async (req, res, next) => {
+    res.status(200).json({
+        status: "Success",
+        data: {
+            name: req.user.name,
+            email: req.user.email,
+            userId: req.user._id
+        }
+    })
+})
