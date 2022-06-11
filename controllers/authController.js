@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const AppError = require('./../utils/appError')
 const sendEmail = require('./../utils/email')
 const { catchAsync } = require('../utils/catchAsync')
+const Mapper = require('../models/Mapper')
 
 const signToken = id => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -58,6 +59,18 @@ exports.login = catchAsync(async (req, res, next) => {
 
     createSendToken(user, 200, res);
 })
+
+exports.logout = (req, res) => {
+    res.cookie('jwt', "loggedout", {
+        expires: new Date(Date.now() + 10 * 1000),
+        sameSite: "none",
+        secure: true,
+        httpOnly: true
+    })
+    res.status(200).json({
+        status: "Success"
+    })
+}
 
 exports.protect = catchAsync(async (req, res, next) => {
     // 1. Gget token and check if it's there
@@ -188,5 +201,13 @@ exports.me = catchAsync(async (req, res, next) => {
             email: req.user.email,
             userId: req.user._id
         }
+    })
+})
+
+exports.checkAccess = catchAsync(async (req, res, next) => {
+    const mapObj = await Mapper.findOne({ user: req.user._id, documentId: req.params.docId })
+    if (!mapObj) return next(new AppError("You don't have access", 401))
+    res.status(200).json({
+        status: "Success"
     })
 })
