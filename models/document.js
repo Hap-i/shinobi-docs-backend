@@ -9,16 +9,6 @@ const docSchema = new mongoose.Schema({
         type: Object,
         required: false
     },
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now
-    // },
-    // owner: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User',
-    //     required: [true, 'A Document must belong to a user']
-    // }
-
 
 })
 

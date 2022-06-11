@@ -75,12 +75,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     // 2. Verification of token
-    /*const verifyJWT = async function(token){
-        return new Promise((resolve, reject) =>{
-            resolve(jwt.verify(token, process.env.JWT_SECRET))
-        })
-    }
-    const decode = await verifyJWT(token)*/
     const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
     // 3. check if user actually exists

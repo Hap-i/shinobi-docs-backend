@@ -1,9 +1,12 @@
 const express = require('express');
-const { createNewDocument } = require('../controllers/docController');
+const { createNewDocument, getAllDocuments } = require('../controllers/docController');
+const authController = require('../controllers/authController')
+
 const router = express.Router();
 
 router
     .route('/')
-    .post(createNewDocument)
+    .post(authController.protect, createNewDocument)
+    .get(authController.protect, getAllDocuments)
 
 module.exports = router
