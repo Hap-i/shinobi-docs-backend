@@ -38,7 +38,7 @@ exports.getAllDocuments = catchAsync(async (req, res, next) => {
 exports.shareDocument = catchAsync(async (req, res, next) => {
     const mapObj = await Mapper.findOne({ user: req.user._id, documentId: req.params.docId })
     // check if the user is the document owner or not
-    if (!mapObj) return next(new AppError("You don't have access", 401))
+    if (!mapObj) return next(new AppError("You don't have access to this document", 401))
     if (mapObj.access !== "owner") {
         return next(new AppError("You don't have Enough permission to share this document", 401))
     }
@@ -68,3 +68,19 @@ exports.shareDocument = catchAsync(async (req, res, next) => {
     })
 })
 
+exports.changeName = catchAsync(async (req, res, next) => {
+    const mapObj = await Mapper.findOne({ user: req.user._id, documentId: req.params.docId })
+    // check if the user is the document owner or not
+    if (!mapObj) return next(new AppError("You don't have access to this document", 401))
+    if (mapObj.access !== "owner") {
+        return next(new AppError("You don't have Enough permission to edit name for this document", 401))
+    }
+    const doc = await Document.findById(req.params.docId)
+    if (!doc) return next(new AppError("Document not found", 404))
+    doc.title = req.body.name
+    await doc.save()
+    res.status(201).json({
+        status: "Success"
+    })
+
+})
