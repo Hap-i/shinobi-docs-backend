@@ -205,9 +205,13 @@ exports.me = catchAsync(async (req, res, next) => {
 })
 
 exports.checkAccess = catchAsync(async (req, res, next) => {
-    const mapObj = await Mapper.findOne({ user: req.user._id, documentId: req.params.docId })
+    const mapObj = await Mapper.findOne({ user: req.user._id, documentId: req.params.docId }).populate('documentId', 'title')
     if (!mapObj) return next(new AppError("You don't have access", 401))
     res.status(200).json({
-        status: "Success"
+        status: "Success",
+        data: {
+            docName: mapObj.documentId.title,
+            access: mapObj.access
+        }
     })
 })
