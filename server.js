@@ -17,7 +17,7 @@ const server = app.listen(port, () => {
     console.log(`App is runnig on port ${port}...`)
 })
 
-const io = require("socket.io")(server, { cors: { origin: "http://localhost:3000" } });
+const io = require("socket.io")(server, { cors: { origin: process.env.CORS_ORIGIN } });
 io.on('connection', (socket) => {
     socket.on('get-documnet', async documentId => {
         // console.log("get-document called and id is : ", documentId);

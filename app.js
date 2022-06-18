@@ -6,18 +6,19 @@ const globalErrorHandler = require('./controllers/errorController')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 // const { default: rateLimit } = require('express-rate-limit');
-// const { default: helmet } = require('helmet');
+const { default: helmet } = require('helmet');
 // const ExpressMongoSanitize = require('express-mongo-sanitize');
-// const xss = require('xss-clean');
+const xss = require('xss-clean');
 // const hpp = require('hpp');
 
 const docRouter = require('./routes/docRoutes')
 const userRouter = require('./routes/userRouter')
+const compression = require('compression')
 
 const app = express();
 
 // security middleware
-// app.use(helmet());
+app.use(helmet());
 
 // Middleware
 // Third party Middkeware  --> this shows the proper req made in log
@@ -38,7 +39,9 @@ app.use(express.json({ limit: '10kb' }));
 // app.use(ExpressMongoSanitize());
 
 // Data sanitization against XSS.
-// app.use(xss());
+app.use(xss());
+
+app.use(compression())
 
 //prevent parameter pollution
 // app.use(hpp({
@@ -63,12 +66,12 @@ app.use(express.static(`${__dirname}/public`));
 
 // Routes
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN,
     credentials: 'true',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+    res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN);
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type,Authorization, Accept');
     next();
