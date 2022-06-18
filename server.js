@@ -43,3 +43,18 @@ async function findDocument(id) {
     if (document) return document
     return
 }
+
+process.on('unhandledRejection', err => {
+    console.log("undandeled Rejection! shutting down ...")
+    console.log(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    })
+})
+
+process.on('SIGTERM', () => {
+    console.log("SIGTERM received. Shutting down gracefully.")
+    server.close(() => {
+        console.log("Process terminate");
+    })
+})
